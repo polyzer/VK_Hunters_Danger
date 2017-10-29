@@ -16,13 +16,13 @@ var PlayerShip = function (json_params)
 	this.Geometry = new THREE.BoxBufferGeometry(200, 200, 200);
 	this.Material = new THREE.MeshStandardMaterial({emissive: "#57d9ff"});
 	
-	this.Status = "live"; // ("live", "dead")
+	this.State = "live"; // ("live", "dead")
 	
 	this.Health = 500; // 
 	this.Bullets = [];
 
 
-	this.BulletsCounter = document.getElementById("BulletsCounter");
+	this.BulletsCounter = GLOBAL_OBJECTS.getBulletsCounterDiv();
 	this.BulletsCounter.appendChild(document.createTextNode("0"));
 	// Для локального игрока
 	if(this.Camera !== null)

@@ -2,8 +2,8 @@
 var Game = function (json_params) 
 {
 	// подготовка
-	this.Container = document.createElement("div");
-	this.Container.setAttribute("id", "MainContainer");
+	this.Container = GLOBAL_OBJECTS.getGameContainer();
+
 	document.body.appendChild(this.Container);
 
 	this.Camera = new THREE.PerspectiveCamera(
@@ -86,7 +86,8 @@ Game.prototype.createLevel = function ()
 		var hunter = new Hunter({
 			Scene: this.Scene, 
 			LocalUserMeshPosition: this.LocalPlayer.getPosition(),
-			StartPosition: this.Room.getRandomPointInRoom()
+			StartPosition: this.Room.getRandomPointInRoom(),
+			AttackCallback: this.LocalPlayer.getAttackCallback()
 		});
 		this.Hunters.push(hunter);
 	}
@@ -94,7 +95,9 @@ Game.prototype.createLevel = function ()
 	{
 		var beehive = new Beehive({
 			Scene: this.Scene,
-			StartPosition: this.Room.getRandomPointInRoom()
+			StartPosition: this.Room.getRandomPointInRoom(),
+			LocalUserMeshPosition: this.LocalPlayer.getPosition(),
+			PlayerAttackCallback: this.LocalPlayer.getAttackCallback()
 		});		
 		this.Beehives.push(beehive);
 	}
@@ -289,18 +292,18 @@ Game.prototype.startWorkingProcess = function ()
 /*
 	Функция управляет поведением Ульев по состояниям
 */
-Game.prototype.controlHunters = function ()
+Game.prototype.controlHunters = function (delta)
 {
 	for(var i=0; i<this.Hunters.length; i++)
 	{
-		this.Hunters[i].update();
-		if(this.Hunters[i].Status === GAME_CONSTANTS.HUNTERS.HUNTER.STATES.DEAD)
+		this.Hunters[i].update(delta);
+		if(this.Hunters[i].getState() === GAME_CONSTANTS.HUNTERS.HUNTER.STATES.DEAD)
 		{
 			this.Room.getScene().remove(this.Hunters[i].getMesh());
+			var soul = this.Hunters[i].getSoul();
+			this.HuntersSouls.push(soul);
+			this.Scene.add(soul.getMesh());
 			this.Hunters.splice(i,1);
-			this.HuntersSouls.push(new HunterSoul({
-				Position: this.Hunters[i].getMesh().position,
-			}))
 			i--;
 			continue;
 		}
@@ -310,12 +313,12 @@ Game.prototype.controlHunters = function ()
 /*
 	Функция управляет поведением Душ охотников по состояниям
 */
-Game.prototype.controlHuntersSouls = function ()
+Game.prototype.controlHuntersSouls = function (delta)
 {
 	for(var i=0; i<this.HuntersSouls.length; i++)
 	{
-		this.HuntersSouls[i].update();
-		if(this.HuntersSouls[i].Status === GAME_CONSTANTS.HUNTERS.HUNTER.STATES.DEAD)
+		this.HuntersSouls[i].update(delta);
+		if(this.HuntersSouls[i].getState() === GAME_CONSTANTS.HUNTER_SOULS.HUNTER_SOUL.STATES.DEAD)
 		{
 			this.Room.getScene().remove(this.HuntersSouls[i].getMesh());
 			this.HuntersSouls.splice(i,1);
@@ -328,28 +331,32 @@ Game.prototype.controlHuntersSouls = function ()
 /*
 	Функция управляет поведением Ульев
 */
-Game.prototype.controlBeehives = function ()
+Game.prototype.controlBeehives = function (delta)
 {
 	for(var i=0; i< this.Beehives.length; i++)
 	{
-		this.Beehives[i].update();
-		if(this.Beehives[i].Status === GAME_CONSTANTS.BEEHIVES.BEEHIVE.STATES.DEAD)
+		this.Beehives[i].update(delta);
+		if(this.Beehives[i].getState() === GAME_CONSTANTS.BEEHIVES.BEEHIVE.STATES.DEAD)
 		{
 			this.Room.getScene().remove(this.Beehives[i].getMesh());
 			this.Beehives.splice(i, 1);
 			i--;
 			continue;
+		}else if(this.Beehives[i].getState() === GAME_CONSTANTS.BEEHIVES.BEEHIVE.STATES.HUNTER_CREATED)
+		{
+			this.Hunters.push(this.Beehives[i].getHunter());
+			continue;
 		}
 	};
 };
 
-Game.prototype.controlBullets = function ()
+Game.prototype.controlBullets = function (delta)
 {
 
 	for(var i=0; i< this.Bullets.length; i++)
 	{
-		this.Bullets[i].update(this.Delta);
-		if(this.Bullets[i].getStatus() === GAME_CONSTANTS.BULLETS.BULLET.STATES.DEAD)
+		this.Bullets[i].update(delta);
+		if(this.Bullets[i].getState() === GAME_CONSTANTS.BULLETS.BULLET.STATES.DEAD)
 		{
 			this.Scene.remove(this.Bullets[i].getMesh());
 			this.Bullets.splice(i,1);
@@ -359,7 +366,7 @@ Game.prototype.controlBullets = function ()
 };
 
 /*Функция проверяет пересечение пуль с уничтожаемыми объектами*/
-Game.prototype.controlCollision = function ()
+Game.prototype.controlCollision = function (delta)
 {
 	for(var i=0; i < this.Bullets.length; i++)
 	{
@@ -367,10 +374,10 @@ Game.prototype.controlCollision = function ()
 		
 		for(var j=0; j< this.Hunters.length; j++)
 		{
-			bbox = this.Hunters[j].getBBox();
+			var bbox = this.Hunters[j].getBBox();
 			if(bullet_bbox.intersectsBox(bbox))
 			{
-				this.Hunters[j].onDamaged({
+				this.Hunters[j].onHit({
 					Damage: this.Bullets[i].getDamage()
 				})
 				this.Bullets[i].onHit();
@@ -379,10 +386,10 @@ Game.prototype.controlCollision = function ()
 
 		for(var j=0; j< this.Beehives.length; j++)
 		{
-			bbox = this.Beehives[j].getBBox();
+			var bbox = this.Beehives[j].getBBox();
 			if(bullet_bbox.intersectsBox(bbox))
 			{
-				this.Beehives[j].onDamaged({
+				this.Beehives[j].onHit({
 					Damage: this.Bullets[i].getDamage()
 				})
 				this.Bullets[i].onHit();

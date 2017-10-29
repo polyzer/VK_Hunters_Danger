@@ -158,8 +158,9 @@ const GAME_CONSTANTS = {
 	BEEHIVES: {
 		BEEHIVE: {
 			STATES: {
-				LIVE: 0, 
-				DEAD: 1
+				LIVE: 0,
+				DEAD: 1,
+				HUNTER_CREATED: 2
 			}
 		},
 		BLACK: { 
@@ -246,6 +247,15 @@ const GAME_CONSTANTS = {
 	},
 	LEVELS_CONFIG: {
 
+	},
+	LOCAL_PLAYER: {
+		HEALTH:{
+			MAX: 1000
+		},
+		STATES: {
+			LIVE: 0,
+			DEAD: 1
+		}
 	}
 };
 

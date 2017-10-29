@@ -7,7 +7,9 @@ var Beehive = function (json_params)
 {
 	var json_params_names = [
 		"Scene",
-		"StartPosition"
+		"StartPosition",
+		"LocalUserMeshPosition",
+		"PlayerAttackCallback"
 	];
 	setParametersByArray.call(this, json_params, json_params_names);
 
@@ -16,7 +18,6 @@ var Beehive = function (json_params)
 	this.Health = GAME_CONSTANTS.BEEHIVES.BLACK.HEALTH.MAX;
 	this.State = GAME_CONSTANTS.BEEHIVES.BEEHIVE.STATES.LIVE;
 	
-
 	this.HunterIndex = GAME_CONSTANTS.HUNTERS.BLACK.INDEX;
 	this.Hunter = null;
 	/*Время, по прошествию которого, должен создаваться*/
@@ -39,6 +40,22 @@ Beehive.prototype.update = function (delta)
 	this.controlHealth();
 };
 
+Beehive.prototype.getState = function ()
+{
+	return this.State;
+};
+
+Beehive.prototype.onHit = function (json_params)
+{
+	if(json_params)
+	{
+		if(json_params.Damage)
+		{
+			this.Health -= json_params.Damage;
+		}
+	}
+};
+
 Beehive.prototype.getBBox = function ()
 {
 	return this.BBox.setFromObject(this.Mesh);
@@ -48,14 +65,19 @@ Beehive.prototype.createHunter = function ()
 {
 	this.Hunter = new Hunter({
 		Scene: this.Scene, 
-		LocalUserMeshPosition: this.LocalUserMeshPosition
+		LocalUserMeshPosition: this.LocalUserMeshPosition,
+		StartPosition: this.Mesh.position.clone(),
+		AttackCallback: this.PlayerAttackCallback
 	});
 	this.State = GAME_CONSTANTS.BEEHIVES.BEEHIVE.STATES.HUNTER_CREATED;
 };
 
 Beehive.prototype.getHunter = function ()
 {
-	return new Hunter();
+	if(	this.State === GAME_CONSTANTS.BEEHIVES.BEEHIVE.STATES.HUNTER_CREATED){
+		this.State = GAME_CONSTANTS.BEEHIVES.BEEHIVE.STATES.LIVE;
+	}
+	return this.Hunter;
 };
 
 Beehive.prototype.controlHealth = function ()

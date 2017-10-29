@@ -26,7 +26,6 @@ var MeshesBase = function ()
 		new THREE.MultiMaterial( materials )
 	);
 
-	this.BlackHunterMesh.scale.set(10, 10, 10);
 	materials = [
 	    new THREE.MeshStandardMaterial( { color: 0xFF0000 } ), // right
 	    new THREE.MeshStandardMaterial( { color: 0xFF0000 } ), // left
@@ -89,7 +88,7 @@ MeshesBase.prototype.onSceneLoaded = function (scene)
 			Mesh: this.BlackSoul
 		}
 	}
-
+	this.MeshesData.BlackBeehive.Mesh.scale.set(200,200,200);
 	window.GLOBAL_OBJECTS.createPerson();
 	window.GLOBAL_OBJECTS.createMenu();
 };

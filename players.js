@@ -16,6 +16,7 @@ var LocalPlayer = function (json_params)
 
 	setParametersByArray.call(this, json_params, json_params_names);
 
+	this.onAttackCallbackBF = this.onAttackCallback.bind(this);
 	this.ScreenWidth = GAME_CONSTANTS.CAMERA_PARAMETERS.SCREEN_WIDTH;
 	this.ScreenHeight = GAME_CONSTANTS.CAMERA_PARAMETERS.SCREEN_HEIGHT;
 
@@ -29,6 +30,8 @@ var LocalPlayer = function (json_params)
 	this.MouseVector = new THREE.Vector2();
 	this.INTERSECTED = null;
 		
+	this.Health = GAME_CONSTANTS.LOCAL_PLAYER.HEALTH.MAX;
+	this.State = GAME_CONSTANTS.LOCAL_PLAYER.STATES.LIVE;
 
 	this.onMouseMoveBF = this.onMouseMove.bind(this);
 	window.addEventListener("mousemove", this.onMouseMoveBF, false);
@@ -36,6 +39,30 @@ var LocalPlayer = function (json_params)
 	this.onClickBF = this.onClick.bind(this);
 	window.addEventListener("click", this.onClickBF, false);
 		
+};
+/*Эту функцию вызывают, когда атакую пользователя.*/
+LocalPlayer.prototype.onAttackCallback = function (json_params)
+{
+	if(json_params)
+		if(json_params.Damage)
+		{
+			this.Health -= json_params.Damage;
+			GLOBAL_OBJECTS.setLocalPlayerHealthLineDiv(this.Health/GAME_CONSTANTS.LOCAL_PLAYER.HEALTH.MAX);
+		}
+	if(this.Health <= 0)
+	{
+		this.State = GAME_CONSTANTS.LOCAL_PLAYER.STATES.DEAD;
+	}
+};
+
+LocalPlayer.prototype.getAttackCallback = function ()
+{
+	return this.onAttackCallbackBF;
+};
+
+LocalPlayer.prototype.getState = function ()
+{
+	return this.State;
 };
 
 LocalPlayer.prototype.getPosition = function ()

@@ -23,8 +23,7 @@ var Menu = function (json_params)
 		 */	
 	
 	
-	this.Container = document.createElement("div");
-	this.Container.setAttribute("id", "MenuContainer");
+	this.Container = GLOBAL_OBJECTS.getMenuContainer();
 	document.body.appendChild(this.Container);
 	
 	

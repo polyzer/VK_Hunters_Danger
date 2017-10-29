@@ -26,10 +26,36 @@ var Hunter = function (json_params)
 
 	this.Soul = new HunterSoul({Scene: this.Scene});
 
+	this.TargetMovingTimeBorder = 3;
+	this.RandomMovingTimeBorder = 1;
+	this.MovingTimeCounter = 0;
+	this.RandomMovingVector = new THREE.Vector3();
+
 	this.BoundingRadius = 500;
 	this.BBox = new THREE.Box3();
 	this.MovingType = 0;
 	this.Scene.add(this.Mesh);
+};
+
+Hunter.prototype.getSoul = function ()
+{
+	return this.Soul;
+};
+
+Hunter.prototype.onHit = function (json_params)
+{
+	if(json_params)
+	{
+		if(json_params.Damage)
+		{
+			this.Health -= json_params.Damage;
+		}
+	}
+};
+
+Hunter.prototype.getState = function ()
+{
+	return this.State;
 };
 
 Hunter.prototype.getBBox = function ()
@@ -66,9 +92,10 @@ Hunter.prototype.move = function (mul)
 	{	
 		temp_v.sub(this.Mesh.position);
 		temp_v.normalize();
-		temp_v.multiplyScalar(mul*7);
+		temp_v.multiplyScalar(mul*1000);
 		this.Mesh.position.add(temp_v);
 		this.Mesh.lookAt(this.LocalUserMeshPosition);
+		console.log(this.Mesh.position);
 		this.MovingTimeCounter += mul;
 		if(this.MovingTimeCounter > this.TargetMovingTimeBorder)
 		{

@@ -12,12 +12,18 @@ var Bullet = function (json_params)
 	this.Speed =  6000;
 	this.MeshIndex = GAME_CONSTANTS.BULLETS.GREEN_PLASMA.INDEX;
 	this.Mesh = GLOBAL_OBJECTS.getMeshesBase().getMeshCopyByMeshIndex(this.MeshIndex);
+	this.Damage = 500;
 
 	this.Mesh.position.copy(this.StartPosition);
 	this.BBox = new THREE.Box3();
 	this.BBox.setFromObject(this.Mesh);
 	
-	this.Status = GAME_CONSTANTS.BULLETS.BULLET.STATES.LIVE;		
+	this.State = GAME_CONSTANTS.BULLETS.BULLET.STATES.LIVE;		
+};
+
+Bullet.prototype.getDamage = function ()
+{
+	return this.Damage;
 };
 
 Bullet.prototype.getBBox = function ()
@@ -32,7 +38,7 @@ Bullet.prototype.getMesh = function ()
 
 Bullet.prototype.onHit = function ()
 {
-	this.Status = GAME_CONSTANTS.BULLET.STATES.DEAD;
+	this.State = GAME_CONSTANTS.BULLETS.BULLET.STATES.DEAD;
 };
 
 Bullet.prototype.addToScene = function (scene)
@@ -62,22 +68,22 @@ Bullet.prototype.move = function (time_delta)
 		this.Distance -= vec.length();
 	}else
 	{
-		this.Status = GAME_CONSTANTS.BULLETS.BULLET.STATES.DEAD;
+		this.State = GAME_CONSTANTS.BULLETS.BULLET.STATES.DEAD;
 	}
 
 };
 
-Bullet.prototype.setStatus = function (status)
+Bullet.prototype.setState = function (status)
 {
 	if(status !== undefined)
-		this.Status = status;
+		this.State = status;
 	else
 		throw new Error("have no status");
 };
 
-Bullet.prototype.getStatus = function ()
+Bullet.prototype.getState = function ()
 {
-	return this.Status;
+	return this.State;
 };
 /*Отслеживает попадание в противников
  *В работе учитываем всех мешей: RemotePlayers.length + LocalPlayer

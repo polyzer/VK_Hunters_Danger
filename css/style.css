@@ -420,6 +420,7 @@ body {
 	color: black;
 	background-color: white;
 }
+/*Лейбл цены объекта в магазине.*/
 #PriceLabel {
 	background-color: yellow;
 	width: 50%;
@@ -428,13 +429,13 @@ body {
 	font-size: 20px;
 	font-weight: bold;
 }
-
+/*Описывает линию здоровья игрока.*/
 #BulletsCount {
 	position: absolute;
 	color: white;
 	z-index: 10;
 }
-
+/*Описывает линию здоровья игрока.*/
 #GoodsSectionSelectDiv{
 	display: flex;
 	flex-direction: row;

@@ -7,6 +7,8 @@ Person: структура, которая описывает все данны�
 var GlobalObjects = function ()
 {
 	this.setMeshesBaseBF = this.setMeshesBase.bind(this);
+
+
 	/*Содержит все Меши игры в себе.*/
 	this.MeshesBase = null;
 	/*Персона содержит все данные, необходимые.*/
@@ -21,20 +23,66 @@ var GlobalObjects = function ()
 	this.Level = null;
 	window.GLOBAL_OBJECTS = this;
 
+	this.LocalPlayerHealthLineDiv = null;
+	this.BulletsCounterDiv = null;
+	this.addAllInputElements();
+
 	this.meshes_base_promise = new Promise(function (resolve) {
 		resolve(new MeshesBase());
 	});
 	this.meshes_base_promise.then(this.setMeshesBaseBF);
 
-	this.addAllInputElements();
 };
 
 GlobalObjects.prototype.addAllInputElements = function ()
 {
-	var el = document.createElement("div");
-	el.setAttribute("id", "BulletsCounter");
-	document.body.appendChild(el);
+	this.GameContainer = document.createElement("div");
+	this.GameContainer.setAttribute("id", "MainContainer");
 
+	this.MenuContainer = document.createElement("div");
+	this.MenuContainer.setAttribute("id", "MenuContainer");
+
+	this.BulletsCounterDiv = document.createElement("div");
+	this.BulletsCounterDiv.setAttribute("id", "BulletsCounterDiv");
+
+	this.LocalPlayerHealthLineDiv = document.createElement("div");
+	this.LocalPlayerHealthLineDiv.setAttribute("id", "LocalPlayerHealthLineDiv");
+	this.LocalPlayerHealthLineDiv.setAttribute("data-width-coeff", GAME_CONSTANTS.CAMERA_PARAMETERS.SCREEN_WIDTH * 0.25);
+	this.LocalPlayerHealthLineDiv.style.position = "absolute";
+	this.LocalPlayerHealthLineDiv.style.left = "20%";
+	this.LocalPlayerHealthLineDiv.style.top = "10%";
+	this.LocalPlayerHealthLineDiv.style.height = "10%";
+	this.LocalPlayerHealthLineDiv.style.width = this.LocalPlayerHealthLineDiv.widthCoeff + "px";
+	this.LocalPlayerHealthLineDiv.style.backgroundColor = "red";
+};
+
+GlobalObjects.prototype.getGameContainer = function ()
+{
+	return this.GameContainer;
+};
+
+GlobalObjects.prototype.getMenuContainer = function ()
+{
+	return this.MenuContainer;
+};
+
+GlobalObjects.prototype.setLocalPlayerHealthLineDiv = function (percent)
+{
+	var tvar = percent * this.LocalPlayerHealthLineDiv.widthCoeff;
+	if(tvar > 0)
+		this.LocalPlayerHealthLineDiv.style.width = tvar + "px";
+	else
+		this.LocalPlayerHealthLineDiv.style.width = 0 + "px";
+};
+
+GlobalObjects.prototype.getBulletsCounterDiv = function ()
+{
+	return this.BulletsCounterDiv;
+};
+
+GlobalObjects.prototype.getLocalPlayerHealthLineDiv = function ()
+{
+	return this.LocalPlayerHealthLineDiv;
 };
 
 GlobalObjects.prototype.makeRightStreamRequest = function()

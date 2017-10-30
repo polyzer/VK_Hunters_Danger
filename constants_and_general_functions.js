@@ -126,14 +126,15 @@ const GAME_CONSTANTS = {
 				CRITICAL_3: 30
 			},
 			SPEED: {
-				MAX: 100,
-				MIN: 30
+				MAX: 6000,
+				MIN: 1000
 			},
 			STATES: {
 				LIVE: 0,
 				DEATH: 1
 			},
-			INDEX: "BlackHunter"
+			INDEX: "BlackHunter",
+			TIME_TO_ATTACK_SEC: 1
 		},
 		RED: {
 			HEALTH: {
@@ -202,8 +203,8 @@ const GAME_CONSTANTS = {
 			}
 		},
 		GREEN_PLASMA:{
-			Distance: 5000,
-			Speed: 6000,
+			Distance: 10000,
+			Speed: 8000,
 			Direction: {x:100,y:100,z:100},
 			StartPosition: {x:0,y:0,z:0},
 			Mesh: new THREE.Mesh(new THREE.CubeGeometry(20, 20, 20), new THREE.MeshStandardMaterial({emissive: "#00ff00"})),
@@ -250,7 +251,7 @@ const GAME_CONSTANTS = {
 	},
 	LOCAL_PLAYER: {
 		HEALTH:{
-			MAX: 1000
+			MAX: 3000
 		},
 		STATES: {
 			LIVE: 0,
@@ -261,7 +262,7 @@ const GAME_CONSTANTS = {
 
 function getRandomMinusMult()
 {
-	var multip = -1;
+	let multip = -1;
 	if(Math.round(Math.random()) === 1)
 	{
 		multip = multip*multip;
@@ -273,11 +274,11 @@ function getRandomMinusMult()
  */
 function generateRandomString(len)
 {
-	var text = [];
-	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	let text = [];
+	let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 	if((len !== undefined) && (len > 0)){
-		for(var i=0; i<len; i++)
+		for(let i=0; i<len; i++)
 			text.push(possible.charAt(Math.floor(Math.random() * possible.length)));
 	}
 	text = text.join("");
@@ -286,7 +287,7 @@ function generateRandomString(len)
 
 function setParametersByArray(json_params, json_params_names)
 {
-	for (var p_name in json_params_names)
+	for (let p_name in json_params_names)
 	{
 		if(json_params[json_params_names[p_name]])
 		{

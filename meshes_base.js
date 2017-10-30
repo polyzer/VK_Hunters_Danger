@@ -5,14 +5,14 @@
 Функция onSceneLoaded загружает Меши по их индексам.
 т.е. name Меша в Сцене должно совпадать с INDEX в GAME_CONSTANTS.
 */
-var MeshesBase = function ()
+let MeshesBase = function ()
 {
 	this.onSceneLoadedBF = this.onSceneLoaded.bind(this);
 	this.onLoadMeshesPricesFromDBBF = this.onLoadMeshesPricesFromDB.bind(this);
 	/*Загрузчик текстур*/
 	this.ColladaLoader = new THREE.ColladaLoader();
 
-	var materials = [
+	let materials = [
 	    new THREE.MeshStandardMaterial( { color: 0x000000 } ), // right
 	    new THREE.MeshStandardMaterial( { color: 0x000000 } ), // left
 	    new THREE.MeshStandardMaterial( { color: 0x000000 } ), // top
@@ -22,7 +22,7 @@ var MeshesBase = function ()
 	];
 
 	this.BlackHunterMesh = new THREE.Mesh(
-		new THREE.BoxGeometry(140, 140, 140), 
+		new THREE.BoxGeometry(250, 250, 250), 
 		new THREE.MultiMaterial( materials )
 	);
 
@@ -49,7 +49,7 @@ var MeshesBase = function ()
 		new THREE.SphereGeometry()
 	);
 
-	var prom = this.load3DSceneByCollada(this.ColladaLoader, "./models/Beehive.dae");
+	let prom = this.load3DSceneByCollada(this.ColladaLoader, "./models/Beehive.dae");
 	prom.then(this.onSceneLoadedBF);
 };
 
@@ -95,8 +95,8 @@ MeshesBase.prototype.onSceneLoaded = function (scene)
 
 MeshesBase.prototype.getMeshDataByMeshIndex = function (index)
 {
-	var keys = Object.keys(this.MeshesData);
-	for(var i=0; i< keys.length; i++)
+	let keys = Object.keys(this.MeshesData);
+	for(let i=0; i< keys.length; i++)
 	{
 		if(this.MeshesData[keys[i]]["Index"] === index)
 		{
@@ -118,7 +118,7 @@ MeshesBase.prototype.setCubeMeshCase = function (cubeMeshCase)
 
 MeshesBase.prototype.loadMeshesPricesFromDB = function ()
 {
-	var send_data = "datas="+JSON.stringify({
+	let send_data = "datas="+JSON.stringify({
 		operation: "get_meshes_prices"
 	});
 	$.ajax({
@@ -140,9 +140,9 @@ MeshesBase.prototype.onLoadMeshesPricesFromDB = function (json_params)
 
 	this.keys = Object.keys(this.MeshesData);
 	
-	for(var i=0; i< this.keys.length; i++)
+	for(let i=0; i< this.keys.length; i++)
 	{
-		for(var j=0; j < json_params["result_datas"].length; j++)
+		for(let j=0; j < json_params["result_datas"].length; j++)
 		{
 			if(this.MeshesData[this.keys[i]]["Index"] === json_params["result_datas"][j]["game_case_mesh_index"])
 			{
@@ -156,7 +156,7 @@ MeshesBase.prototype.onLoadMeshesPricesFromDB = function (json_params)
 MeshesBase.prototype.getNextMeshIndexByCurrentMeshIndex = function (index)
 {
 	this.keys = Object.keys(this.MeshesData);
-	for(var i=0; i< this.keys.length; i++)
+	for(let i=0; i< this.keys.length; i++)
 	{
 		if(this.MeshesData[this.keys[i]]["Index"] === index)
 		{
@@ -175,7 +175,7 @@ MeshesBase.prototype.getNextMeshIndexByCurrentMeshIndex = function (index)
 MeshesBase.prototype.getPrevMeshIndexByCurrentMeshIndex = function (index)
 {
 	this.keys = Object.keys(this.MeshesData);
-	for(var i=0; i< this.keys.length; i++)
+	for(let i=0; i< this.keys.length; i++)
 	{
 		if(this.MeshesData[this.keys[i]]["Index"] === index)
 		{
@@ -192,8 +192,8 @@ MeshesBase.prototype.getPrevMeshIndexByCurrentMeshIndex = function (index)
 
 MeshesBase.prototype.getMeshPriceByIndex = function (index)
 {
-	var keys = Object.keys(this.MeshesData);
-	for(var i=0; i< keys.length; i++)
+	let keys = Object.keys(this.MeshesData);
+	for(let i=0; i< keys.length; i++)
 	{
 		if(this.MeshesData[keys[i]]["Index"] === index)
 		{
@@ -207,8 +207,8 @@ MeshesBase.prototype.getMeshPriceByIndex = function (index)
 /*Returns copy of the Object by Object Index*/
 MeshesBase.prototype.getDescriptionByIndex = function (index)
 {
-	var keys = Object.keys(this.MeshesData);
-	for(var i=0; i< keys.length; i++)
+	let keys = Object.keys(this.MeshesData);
+	for(let i=0; i< keys.length; i++)
 	{
 		if(this.MeshesData[keys[i]]["Index"] === index)
 		{
@@ -222,7 +222,7 @@ MeshesBase.prototype.getDescriptionByIndex = function (index)
 /*Returns copy of the Object by Object Index*/
 MeshesBase.prototype.getMeshCopyByMeshIndex = function (index)
 {
-	for(var mesh_name in this.MeshesData)
+	for(let mesh_name in this.MeshesData)
 	{
 		if(this.MeshesData.hasOwnProperty(mesh_name))
 		{
@@ -241,7 +241,7 @@ MeshesBase.prototype.getMeshCopyByMeshIndex = function (index)
 /*Returns copy of the Object by Object Index*/
 MeshesBase.prototype.getTargetMeshCopyByIndex = function (index)
 {
-	for(var mesh_name in this.MeshesData)
+	for(let mesh_name in this.MeshesData)
 	{
 		if(this.MeshesData.hasOwnProperty(mesh_name))
 		{

@@ -6,9 +6,9 @@
  *   scene: THREE.Scene(); - объект сцены, в которую нужно будет добавить свой корабль
  * }
  */
-var LocalPlayer = function (json_params)
+let LocalPlayer = function (json_params)
 {
-	var json_params_names = [
+	let json_params_names = [
 		"Scene",
 		"Camera",
 		"Ship"
@@ -21,7 +21,7 @@ var LocalPlayer = function (json_params)
 	this.ScreenHeight = GAME_CONSTANTS.CAMERA_PARAMETERS.SCREEN_HEIGHT;
 
 	this.Controls = new THREE.FlyControls(this.Ship.getMesh());
-	this.Controls.movementSpeed = 70;
+	this.Controls.movementSpeed = 140;
 	this.Controls.rollSpeed = Math.PI / 24;
 	this.Controls.autoForward = false;
 	this.Controls.dragToLook = false;
@@ -32,14 +32,28 @@ var LocalPlayer = function (json_params)
 		
 	this.Health = GAME_CONSTANTS.LOCAL_PLAYER.HEALTH.MAX;
 	this.State = GAME_CONSTANTS.LOCAL_PLAYER.STATES.LIVE;
+	this.SoulsCount = 0;
+
 
 	this.onMouseMoveBF = this.onMouseMove.bind(this);
 	window.addEventListener("mousemove", this.onMouseMoveBF, false);
 
 	this.onClickBF = this.onClick.bind(this);
 	window.addEventListener("click", this.onClickBF, false);
+
 		
 };
+
+LocalPlayer.prototype.getBBox = function ()
+{
+	return this.Ship.getBBox();
+};
+
+LocalPlayer.prototype.addSoul = function (soul)
+{
+	this.SoulsCounter++;
+};
+
 /*Эту функцию вызывают, когда атакую пользователя.*/
 LocalPlayer.prototype.onAttackCallback = function (json_params)
 {
@@ -47,7 +61,7 @@ LocalPlayer.prototype.onAttackCallback = function (json_params)
 		if(json_params.Damage)
 		{
 			this.Health -= json_params.Damage;
-			GLOBAL_OBJECTS.setLocalPlayerHealthLineDiv(this.Health/GAME_CONSTANTS.LOCAL_PLAYER.HEALTH.MAX);
+			GLOBAL_OBJECTS.setLocalPlayerHealthLineDivLength(100*this.Health/GAME_CONSTANTS.LOCAL_PLAYER.HEALTH.MAX);
 		}
 	if(this.Health <= 0)
 	{
@@ -80,14 +94,14 @@ LocalPlayer.prototype.onClick = function ()
 {
 //	console.log(this.Raycaster.ray.direction);
 	// собираем параметры, необходимые для выстрела в единую структуру
-	// var shoot_data = this.setDataParameters({
+	// let shoot_data = this.setDataParameters({
 	// 	Direction: this.Raycaster.ray.direction.clone()
 	// });
 	// // сначала отправляем данные!
 	// this.NetMessagesObject.ShootMessage.data = data;
 	// console.log(data);
 	// this.sendDataToAllRemotePlayers(this.NetMessagesObject.ShootMessage);
-	// var shoot_data = $.extend(true, {}, data);
+	// let shoot_data = $.extend(true, {}, data);
 	// теперь стреляем сами!
 	// shoot_data.all_players = this.AllPlayers;
 	// shoot_data.owner_id = this.ID;
@@ -116,7 +130,7 @@ LocalPlayer.prototype.onClick = function ()
 
 LocalPlayer.prototype.setDataParameters = function (json_params)
 {
-	var ret_params = this.Ship.getBulletParametersByGunAndBulletTypes(json_params);
+	let ret_params = this.Ship.getBulletParametersByGunAndBulletTypes(json_params);
 	ret_params.direction = json_params.direction;
 	return ret_params;
 };
@@ -133,7 +147,7 @@ LocalPlayer.prototype.sendDataToAllRemotePlayers = function (message)
 	{
 		message = JSON.stringify(message);
 	}
-	for(var i=0;i < this.AllPlayers[1].length; i++)
+	for(let i=0;i < this.AllPlayers[1].length; i++)
 	{
 		if(this.AllPlayers[1][i].ConnectionStatus === "open")
 			this.AllPlayers[1][i].Connection.send(message);
@@ -154,7 +168,7 @@ LocalPlayer.prototype.raycastingControl = function ()
 	
 	this.Raycaster.setFromCamera(this.MouseVector, this.Camera);
 
-	var intersects = this.Raycaster.intersectObjects(this.Scene.children);
+	let intersects = this.Raycaster.intersectObjects(this.Scene.children);
 	//window.alert(this.INTERSECTED);
 	if (intersects.length > 0)
 	{
@@ -240,7 +254,7 @@ LocalPlayer.prototype.setVideoTexture = function()
  * 
  */
 
-var RemotePlayer = function (json_params)
+let RemotePlayer = function (json_params)
 {
 	if(json_params !== undefined)
 	{

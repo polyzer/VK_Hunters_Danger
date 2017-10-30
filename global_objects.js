@@ -4,7 +4,7 @@ MeshesBase: база всех мешей приложения;
 Person: структура, которая описывает все данные, связанные с необходимыми данными в приложении
 Должен существовать только один экземпляр данного объекта.
 */
-var GlobalObjects = function ()
+let GlobalObjects = function ()
 {
 	this.setMeshesBaseBF = this.setMeshesBase.bind(this);
 
@@ -45,15 +45,24 @@ GlobalObjects.prototype.addAllInputElements = function ()
 	this.BulletsCounterDiv = document.createElement("div");
 	this.BulletsCounterDiv.setAttribute("id", "BulletsCounterDiv");
 
+	this.LocalPlayerHealthLineDivBorder = document.createElement("div");
+	this.LocalPlayerHealthLineDivBorder.setAttribute("id", "LocalPlayerHealthLineDivBorder");
+	this.LocalPlayerHealthLineDivBorder.setAttribute("data-width-coeff", GAME_CONSTANTS.CAMERA_PARAMETERS.SCREEN_WIDTH * 0.35);
+	this.LocalPlayerHealthLineDivBorder.style.border = "3px solid black";
+	this.LocalPlayerHealthLineDivBorder.style.position = "absolute";
+	this.LocalPlayerHealthLineDivBorder.style.left = "30%";
+	this.LocalPlayerHealthLineDivBorder.style.top = "10%";
+	this.LocalPlayerHealthLineDivBorder.style.height = "30px";
+	this.LocalPlayerHealthLineDivBorder.style.width = this.LocalPlayerHealthLineDivBorder.dataset.widthCoeff + "px";
+
 	this.LocalPlayerHealthLineDiv = document.createElement("div");
 	this.LocalPlayerHealthLineDiv.setAttribute("id", "LocalPlayerHealthLineDiv");
-	this.LocalPlayerHealthLineDiv.setAttribute("data-width-coeff", GAME_CONSTANTS.CAMERA_PARAMETERS.SCREEN_WIDTH * 0.25);
-	this.LocalPlayerHealthLineDiv.style.position = "absolute";
-	this.LocalPlayerHealthLineDiv.style.left = "20%";
-	this.LocalPlayerHealthLineDiv.style.top = "10%";
-	this.LocalPlayerHealthLineDiv.style.height = "10%";
-	this.LocalPlayerHealthLineDiv.style.width = this.LocalPlayerHealthLineDiv.widthCoeff + "px";
+	this.LocalPlayerHealthLineDiv.style.height = "100%";
+	this.LocalPlayerHealthLineDiv.style.width = "100%";
+	this.LocalPlayerHealthLineDiv.style.position = "relative";
 	this.LocalPlayerHealthLineDiv.style.backgroundColor = "red";
+
+	this.LocalPlayerHealthLineDivBorder.appendChild(this.LocalPlayerHealthLineDiv);
 };
 
 GlobalObjects.prototype.getGameContainer = function ()
@@ -66,13 +75,13 @@ GlobalObjects.prototype.getMenuContainer = function ()
 	return this.MenuContainer;
 };
 
-GlobalObjects.prototype.setLocalPlayerHealthLineDiv = function (percent)
+GlobalObjects.prototype.setLocalPlayerHealthLineDivLength = function (percent)
 {
-	var tvar = percent * this.LocalPlayerHealthLineDiv.widthCoeff;
-	if(tvar > 0)
-		this.LocalPlayerHealthLineDiv.style.width = tvar + "px";
+	let tlet = percent;// * this.LocalPlayerHealthLineDiv.dataset.widthCoeff;
+	if(tlet > 0)
+		this.LocalPlayerHealthLineDiv.style.width = tlet + "%";
 	else
-		this.LocalPlayerHealthLineDiv.style.width = 0 + "px";
+		this.LocalPlayerHealthLineDiv.style.width = 0 + "%";
 };
 
 GlobalObjects.prototype.getBulletsCounterDiv = function ()
@@ -82,7 +91,7 @@ GlobalObjects.prototype.getBulletsCounterDiv = function ()
 
 GlobalObjects.prototype.getLocalPlayerHealthLineDiv = function ()
 {
-	return this.LocalPlayerHealthLineDiv;
+	return this.LocalPlayerHealthLineDivBorder;
 };
 
 GlobalObjects.prototype.makeRightStreamRequest = function()

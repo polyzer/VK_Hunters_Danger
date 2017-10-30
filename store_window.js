@@ -1,4 +1,4 @@
-var StoreWindow = function ()
+let StoreWindow = function ()
 {
 	// this.onOpacityRangeInputChangeBF = this.onOpacityRangeInputChange.bind(this);
 	// this.onFaceColorInputChangeBF = this.onFaceColorInputChange.bind(this);
@@ -220,7 +220,7 @@ StoreWindow.prototype.init = function ()
 
 StoreWindow.prototype.getGoodItemsFromDB = function ()
 {
-	var send_data = "datas=" + JSON.stringify({
+	let send_data = "datas=" + JSON.stringify({
 		operation: "get_all_good_items",
 		vk_id: this.Person.getUserVKID()
 	});
@@ -242,9 +242,9 @@ StoreWindow.prototype.setLoadedGoodItems = function (json_params)
 	{
 		json_params = JSON.parse(json_params);
 	}
-	for(var i=0; i< json_params["result_datas"].length; i++)
+	for(let i=0; i< json_params["result_datas"].length; i++)
 	{
-		var gItem = new GoodItem({
+		let gItem = new GoodItem({
 			GoodGameIndex: json_params["result_datas"][i]["good_game_index"],
 			Price: json_params["result_datas"][i]["price"],
 			Description: json_params["result_datas"][i]["description"],
@@ -312,7 +312,7 @@ StoreWindow.prototype.setCustomizeUIElementsByJSON = function (json_params)
 /*Обработчик нажатия на кнопку покупки*/
 StoreWindow.prototype.onBuyObjectButtonClick = function ()
 {
-	var params = { 
+	let params = { 
 	    type: 'item', 
 	    item: 'item_25new' 
   	}; 
@@ -327,7 +327,7 @@ StoreWindow.prototype.getMeshFromPersonAndLoadMesh = function ()
 	this.UserObjectView.Scene.remove(this.ShowMeshData.Mesh);
 	/*теперь получаем данные от персоны и загружаем меш и данные из МешБейса*/
 	this.ShowMeshData.MeshIndex = this.Person.getMeshIndex();
-	var tdata = this.MeshesBase.getMeshDataByMeshIndex(this.ShowMeshData.MeshIndex);
+	let tdata = this.MeshesBase.getMeshDataByMeshIndex(this.ShowMeshData.MeshIndex);
 	if(tdata){
 		this.ShowMeshData.Mesh = tdata.mesh;
 		this.ShowMeshData.Price = tdata.price;
@@ -354,10 +354,12 @@ StoreWindow.prototype.updateMeshDescription = function ()
 */
 StoreWindow.prototype.toggleBuyButtonIfMeshWasBought = function (index)
 {
-	if(!arguments[0])
-		var index = this.ShowMeshData.MeshIndex;
+	let pindex = index;
+	if(!pindex){
+		pindex = this.ShowMeshData.MeshIndex;
+	}
 
-	if(!this.Person.isMeshIndexInOpenMeshesIndexes(index))
+	if(!this.Person.isMeshIndexInOpenMeshesIndexes(pindex))
 	{
 		if(!this.UserObjectView.ViewDescriptionDiv.contains(this.BuyContainer))
 			this.UserObjectView.ViewDescriptionDiv.insertBefore(this.BuyContainer, this.UserObjectView.Description);
@@ -437,7 +439,7 @@ StoreWindow.prototype.update = function ()
 /*Загружает сохраненные настройки вида с сервера*/ 
 StoreWindow.prototype.loadSavedCustomViewParameters = function ()
 {
-	var send_data = "datas=" + JSON.stringify({
+	let send_data = "datas=" + JSON.stringify({
 		operation: "get_custom_mesh_view_params",
 		vk_id: this.Person.getUserVKID()
 	});
@@ -484,7 +486,7 @@ StoreWindow.prototype.onSave = function ()
 {
 	this.Person.setMeshIndex(this.ShowMeshData.MeshIndex);
 
-	var send_data = "datas=" + JSON.stringify({
+	let send_data = "datas=" + JSON.stringify({
 		vk_id: this.Person.getUserVKID(),
 		date_time: new Date().toISOString().slice(0, 19).replace('T', ' '),
 		open_meshes: this.Person.getOpenMeshesSaveString(),

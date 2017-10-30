@@ -3,9 +3,9 @@
 Питаются его Энергией.
 На самом деле, при попадании в игрока, игрок вылетает из игры.
 */
-var Hunter = function (json_params)
+let Hunter = function (json_params)
 {
-	var json_params_names = [
+	let json_params_names = [
 		"Scene", //Сцена, в которую будет добавлен Hunter
 		"LocalUserMeshPosition", //Mesh.position пользователя
 		"StartPosition", //Позиция, с которой будет появляться Охотник
@@ -20,14 +20,15 @@ var Hunter = function (json_params)
 		GAME_CONSTANTS.HUNTERS.BLACK.SPEED.MIN;
 	this.Damage = 100;
 	this.Index = GAME_CONSTANTS.HUNTERS.BLACK.INDEX;
+	this.TimeToAttack = GAME_CONSTANTS.HUNTERS.BLACK.TIME_TO_ATTACK_SEC;
 
 
 	this.Mesh.position.copy(this.StartPosition);
 
 	this.Soul = new HunterSoul({Scene: this.Scene});
 
-	this.TargetMovingTimeBorder = 3;
-	this.RandomMovingTimeBorder = 1;
+	this.TargetMovingTimeBorder = (5 - 1) * Math.random() + 1;
+	this.RandomMovingTimeBorder = (3 - 1) * Math.random() + 1;
 	this.MovingTimeCounter = 0;
 	this.RandomMovingVector = new THREE.Vector3();
 
@@ -77,22 +78,27 @@ Hunter.prototype.controlHealth = function ()
 	if(this.Health <= 0)
 	{
 		this.State = GAME_CONSTANTS.HUNTERS.HUNTER.STATES.DEAD;
+		this.Soul.setPosition(this.Mesh.position);
 	}
 };
 
 Hunter.prototype.move = function (mul)
 {
-	var distTo = this.Mesh.position.distanceTo(this.LocalUserMeshPosition);
-	if(distTo < this.BoundingRadius)
+	let distTo = this.Mesh.position.distanceTo(this.LocalUserMeshPosition);
+	if(distTo < this.BoundingRadius && this.TimeToAttack <= 0)
 	{
 		this.AttackCallback({Damage: this.Damage});
+		this.TimeToAttack = GAME_CONSTANTS.HUNTERS.BLACK.TIME_TO_ATTACK_SEC;
+	} else
+	{
+		this.TimeToAttack -= mul;
 	}
-	var temp_v = this.LocalUserMeshPosition.clone();
+	let temp_v = this.LocalUserMeshPosition.clone();
 	if(this.MovingType === 0)
 	{	
 		temp_v.sub(this.Mesh.position);
 		temp_v.normalize();
-		temp_v.multiplyScalar(mul*1000);
+		temp_v.multiplyScalar(mul*this.Speed);
 		this.Mesh.position.add(temp_v);
 		this.Mesh.lookAt(this.LocalUserMeshPosition);
 		console.log(this.Mesh.position);
@@ -100,7 +106,7 @@ Hunter.prototype.move = function (mul)
 		if(this.MovingTimeCounter > this.TargetMovingTimeBorder)
 		{
 			this.RandomMovingVector.set(Math.random()*2-1, Math.random()*2-1, Math.random()*2-1);
-			this.RandomMovingVector.multiplyScalar(mul);
+			this.RandomMovingVector.multiplyScalar(mul*this.Speed);
 			this.MovingTimeCounter = 0;
 			this.MovingType = 1;				
 		}
@@ -131,7 +137,7 @@ Hunter.prototype.setMesh = function (mesh)
 */
 Hunter.prototype.getRandomMinusMult = function ()
 {
-	var multip = -1;
+	let multip = -1;
 	if(Math.round(Math.random()) === 1)
 	{
 		multip = multip*multip;

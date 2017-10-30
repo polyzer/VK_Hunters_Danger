@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 <link rel="stylesheet" href="./css/style.css" />
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.25.0/babel.min.js"></script>
 <script src='../games_resources/libs/three.js-87/build/three.min.js'></script>
 <script src='../games_resources/libs/three.js-87/examples/js/controls/FlyControls.js'></script>
 <script src='../games_resources/libs/three.js-87/examples/js/renderers/CSS3DRenderer.js'></script>
@@ -36,7 +37,7 @@
 
 <script src="https://vk.com/js/api/xd_connection.js?2"  type="text/javascript"></script>
 </head>
-<script>
+<script type="text/javascript">
 
 if(VK)
 {
@@ -69,14 +70,14 @@ if(VK)
 
 // 	window.Peer.on("open", function () {
 
-// 		var GLOBAL_OBJECTS = new _GlobalObjects();
+// 		let GLOBAL_OBJECTS = new _GlobalObjects();
 // 	});
 // 	window.Peer.on("error", function (err) {
 // 		switch(err.type)
 // 		{
 // 			case "browser-incompatible":
-// 				var error_div = document.createElement("div");
-// 				var text = "Ваш веб-браузер не поддерживает необходимых технологий :( Для работы работы с приложением рекомендуется использовать последнюю версию Google Chrome или Mozilla Firefox ;)";
+// 				let error_div = document.createElement("div");
+// 				let text = "Ваш веб-браузер не поддерживает необходимых технологий :( Для работы работы с приложением рекомендуется использовать последнюю версию Google Chrome или Mozilla Firefox ;)";
 // 				error_div.appendChild(document.createTextNode(text));
 // 				error_div.setAttribute("id", "on_tech_error");
 // 				document.body.appendChild(error_div);

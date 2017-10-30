@@ -1,15 +1,15 @@
 
-var Bullet = function (json_params)
+let Bullet = function (json_params)
 {	
-	var json_params_names = [
+	let json_params_names = [
 	//Направление полёта
 		"Direction",	//Позиция, с которой летит патрон
 		"StartPosition"
 	];
 	setParametersByArray.call(this, json_params, json_params_names);
 
-	this.Distance =  5000;
-	this.Speed =  6000;
+	this.Distance = 15000;
+	this.Speed = 10000;
 	this.MeshIndex = GAME_CONSTANTS.BULLETS.GREEN_PLASMA.INDEX;
 	this.Mesh = GLOBAL_OBJECTS.getMeshesBase().getMeshCopyByMeshIndex(this.MeshIndex);
 	this.Damage = 500;
@@ -61,8 +61,8 @@ Bullet.prototype.move = function (time_delta)
 {
 	if(this.Distance > 0)
 	{
-		var del = this.Speed * time_delta;
-		var vec = this.Direction.clone();
+		let del = this.Speed * time_delta;
+		let vec = this.Direction.clone();
 		vec.multiplyScalar(del);
 		this.Mesh.position.add(vec);
 		this.Distance -= vec.length();
@@ -99,7 +99,7 @@ Bullet.prototype.collisionControl = function ()
 		return;
 	}
 	
-	for(var i=0; i<this.AllPlayers[1].length; i++)
+	for(let i=0; i<this.AllPlayers[1].length; i++)
 	{
 		if(this.BBox.intersectsBox(this.AllPlayers[1][i].getShip().BBox))
 		{
@@ -114,11 +114,11 @@ Bullet.prototype.collisionControl = function ()
 	
 };
 
-var GreenPlasmaBullet = Bullet;
+let GreenPlasmaBullet = Bullet;
 
-var RedPlasmaBullet = function ()
+let RedPlasmaBullet = function ()
 {
-	var json_params_names = [
+	let json_params_names = [
 	//Направление полёта
 		"Direction",	//Позиция, с которой летит патрон
 		"StartPosition"

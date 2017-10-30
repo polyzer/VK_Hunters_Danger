@@ -5,9 +5,9 @@
  * */
 
 
-var PlayerShip = function (json_params)
+let PlayerShip = function (json_params)
 {	
-	var json_params_names = [
+	let json_params_names = [
 		"Scene", 
 		"Camera"
 	];
@@ -31,18 +31,19 @@ var PlayerShip = function (json_params)
 		this.Mesh = new THREE.Object3D();
 		this.Mesh.position.set(0,0,0);
 		this.ShipMesh.position.set(0, 0, 0);
-		this.BBox = new THREE.Box3();
-		this.BBox.setFromObject(this.ShipMesh);	
+		// this.BBox.setFromObject(this.ShipMesh);	
 		
 		this.Camera.position.copy(this.ShipMesh.position);
 		
-		this.Camera.position.y = this.ShipMesh.position.y + 400;
-		this.Camera.position.z = this.ShipMesh.position.z + 400;
-		var vec = this.Mesh.getWorldDirection();
-		vec.z -= 400;
-		this.Camera.lookAt(vec);
+		// this.Camera.position.y = this.ShipMesh.position.y + 400;
+		// this.Camera.position.z = this.ShipMesh.position.z + 400;
+		// let vec = this.Mesh.getWorldDirection();
+		// vec.z -= 400;
+		// this.Camera.lookAt(vec);
 		this.Mesh.add(this.ShipMesh);
 		this.Mesh.add(this.Camera);
+		this.BBox = new THREE.Box3();
+		this.BBox.setFromObject(this.Mesh);
 	}	else
 	// Для удаленного игрока
 	{
@@ -64,6 +65,11 @@ var PlayerShip = function (json_params)
 
 };
 
+PlayerShip.prototype.getBBox = function ()
+{
+	return this.BBox;
+};
+
 PlayerShip.prototype.getBullets = function ()
 {
 	return this.Bullets;
@@ -79,7 +85,7 @@ PlayerShip.prototype.getBulletsCount = function ()
 
 PlayerShip.prototype.getBulletParametersByGunAndBulletTypes = function (json_params)
 {
-	var ret = {};
+	let ret = {};
 	if(json_params.gun_type === "plasma_gun")
 	{
 		ret = this.Gun.getBulletParametersByBulletType(json_params);
@@ -176,7 +182,7 @@ PlayerShip.prototype.setRotation = function (json_params)
  */
 PlayerShip.prototype.shoot = function (json_params)
 {
-	// var gun = this.getGunByType(json_params);
+	// let gun = this.getGunByType(json_params);
 	// json_params.mesh = gun.getBulletMeshByBulletType(json_params);
 	// gun.shoot(json_params);
 	this.Gun.shoot(json_params);
